@@ -1,16 +1,12 @@
 from django.contrib import admin
-from .models import NewsArticle, NewsCategory
+from .models import Attendance 
 
-class NewsCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'date_created', 'date_updated')
-    list_filter = ('date_created', 'date_updated')
-    search_fields = ('name', 'slug')  # Add 'slug' to search_fields if needed
+from django.contrib import admin
 
-class NewsArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'news_category', 'created_at', 'date_updated', 'views')
-    list_filter = ('created_at', 'date_updated', 'news_category')
-    search_fields = ('title', 'body')  # Add 'body' to search_fields if needed
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'created_at','check_out', 'check_in', 'lat', 'long')
+    list_filter = ('created_at', 'check_out','check_in','lat', 'long')
+    search_fields = ('user__email', 'user__username')  # Searching by user's email and username
 
-# Register your models with the customized admin classes
-admin.site.register(NewsArticle, NewsArticleAdmin)
-admin.site.register(NewsCategory, NewsCategoryAdmin)    
+# Register the Attendance model with the customized admin class
+admin.site.register(Attendance, AttendanceAdmin)

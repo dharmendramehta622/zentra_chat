@@ -4,7 +4,7 @@ python3 manage.py makemigrations
 python3 manage.py migrate
  
 # Set environment variables
-export SUPERUSER_USERNAME="vdsta_admin"
+export SUPERUSER_USERNAME="playground_admin"
 export SUPERUSER_PASSWORD="CRACE4DOJ309#esf"
 export SUPERUSER_EMAIL="admin@playground.com"  # Make sure to set this value
 

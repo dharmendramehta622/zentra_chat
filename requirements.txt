@@ -15,6 +15,7 @@ sqlparse==0.4.2
 urllib3==1.26.9
 psycopg2-binary
 django-jazzmin
+graphene-django
 django-shortcuts==1.6
 djangorestframework-simplejwt
 django-filter

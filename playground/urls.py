@@ -16,12 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from graphene_django.views import GraphQLView
+from django.conf.urls import url
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView,SpectacularRedocView,SpectacularSwaggerView
 
 admin.site.site_header = 'Play Ground Admin'                    # default: "Django Administration"
-admin.site.index_title = 'Dashbaord Area'                 # default: "Site administration"
+admin.site.index_title = 'Dashboard Area'                 # default: "Site administration"
 admin.site.site_title = 'Welcome to Play Ground Admin Portal'
 
 router = DefaultRouter()
@@ -30,6 +32,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('apps.website.urls')),
     path('news',include('apps.news.urls')),
+    path('attendance',include('apps.clockin.urls')),
+
+    #graphl view    
+    url(r"graphql", GraphQLView.as_view(graphiql=True)),
+    
+    #api documentation view
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

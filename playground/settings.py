@@ -77,7 +77,9 @@ INSTALLED_APPS = [
     'apps.news',
     'apps.notices',
     'apps.users',
+    'apps.clockin',
     # third party apps 
+    "graphene_django",
     'rest_framework',
     'drf_spectacular',
     'ckeditor',
@@ -192,6 +194,10 @@ CKEDITOR_CONFIGS = {
         'height': 300,
         'width': 900,
     },
+}
+
+GRAPHENE = {
+    "SCHEMA": "django_root.schema.schema"
 }
 
 
