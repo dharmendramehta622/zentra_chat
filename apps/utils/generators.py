@@ -1,5 +1,4 @@
-import random
-import string
+from apps.users.models import User
 
 class Generator:
 
@@ -14,28 +13,42 @@ class Generator:
         username = base_username
         counter = 1
         
-        # Ensure uniqueness
         while username in existing_usernames:
-            username = f"{base_username}{counter}"
+            username = f"{firstname.lower()}{counter}.{lastname.lower()}"
             counter += 1
-        
+            
         return username
 
+
     def create_user(self, **kwargs):
+
         """Create a user with a unique username and a password based on DOB."""
-        if not all(k in kwargs for k in ("first_name", "last_name", "dob", "existing_usernames")):
-            raise ValueError("Not enough arguments provided. Expected: firstname, lastname, dob, existing_usernames")
+        if not all(k in kwargs for k in ("first_name", "last_name", "dob" )):
+            raise ValueError("Not enough arguments provided. Expected: first_name, last_name, dob.")
         
-        first_name = kwargs["first_name"]
+        existing_usernames = list(User.objects.values_list('username', flat=True))
+        dob = kwargs["dob"].strftime('%d-%m-%Y')
+               
+        first_name = kwargs.get("first_name")
         last_name = kwargs["last_name"]
-        dob = kwargs["dob"]
-        existing_usernames = kwargs["existing_usernames"]
+        email = kwargs.get("email")
+        phone_no = kwargs.get("phone_no")
         
         # Generate username and set password
         username = self.generate_username(first_name, last_name, existing_usernames)
-        password = dob  # Assuming dob is in the format 'DD-MM-YYYY'
         
-        return {
-            'username': username,
-            'password': password
-        }
+        if not email:
+            email = f"{username}@attendo.com"
+            
+        user = User.objects.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            dob=dob,
+            email=email,
+            phone_no=phone_no,
+            username=username,
+            password=dob
+        )
+        user.role = "employee"
+        user.save()
+        return user 

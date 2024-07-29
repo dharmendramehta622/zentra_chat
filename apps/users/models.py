@@ -14,7 +14,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, error_messages={
         'unique': "This email already exists in our system."
     })
-    phone_no = models.CharField(max_length=16,)
+    phone_no = models.CharField(max_length=16, blank=True)
     user_image = models.ImageField(upload_to="user_image",)
     is_active = models.BooleanField(default=False)
     dob = models.DateField(auto_now=True)

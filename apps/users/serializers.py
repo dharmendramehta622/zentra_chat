@@ -1,11 +1,33 @@
 from django.contrib.auth import get_user_model, password_validation
 from rest_framework import serializers, status
+from .models import User
 from validate_email_address import validate_email
+from apps.utils.generators import Generator
 from apps.utils.mailbox_validation import MailboxValidation
 
-User = get_user_model()
+
+generator = Generator()
 
 
+class EmployeeAddSerializer(serializers.ModelSerializer):
+    dob = serializers.DateField(
+        input_formats=['%d-%m-%Y'],  # Accepts DOB in DD-MM-YYYY format
+        format='%d-%m-%Y'  # Outputs DOB in DD-MM-YYYY format
+    ) 
+
+    class Meta:
+        model = User
+        fields = [  
+            "first_name",
+            "last_name",
+            "dob",
+        ]
+ 
+
+    def create(self, validated_data):
+        user_data = generator.create_user(**validated_data)
+        return user_data
+    
 class EmployeeRegisterSerializer(serializers.ModelSerializer):
     dob = serializers.DateField(
         input_formats=['%d-%m-%Y'],  # Accepts DOB in DD-MM-YYYY format
@@ -17,20 +39,15 @@ class EmployeeRegisterSerializer(serializers.ModelSerializer):
         fields = [  
             "first_name",
             "last_name",
-            "email",
             "dob",
+            "email",
+            "phone_no",
         ]
  
 
-    def create(self, validated_data):
-        """Create user w/ `employee` role."""
-        # validated_data.pop("confirm_password")
-        user = User.objects.create_user(**validated_data)
-        user.role = "employee"
-        # user.is_active = True
-        # user.email_verified = True
-        user.save()
-        return user
+    def create(self, validated_data): 
+        user_data = generator.create_user(**validated_data) 
+        return user_data
 
 
 class LoginSerializer(serializers.Serializer):
@@ -43,6 +60,7 @@ class LoginSerializer(serializers.Serializer):
 class LoginSendOTPSerializer(serializers.Serializer):
     model = User
     email = serializers.EmailField() 
+    
 class LoginVerifyOTPSerializer(serializers.Serializer):
     model = User
     otp = serializers.CharField() 

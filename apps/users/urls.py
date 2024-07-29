@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 from apps.users import views
-from apps.users.views import (EmployeeRegisterView,
+from apps.users.views import (EmployeeAddView,EmployeeRegisterView,
                               LoginView, EmployeeProfileView,
                               ResetPasswordAPIView, ResetPasswordVerifyAPIView,
                               EmployeeProfileView, VerifyOTPView, LoginSendOTPView,LoginVerifyOTPView,GoogleSigninView
@@ -18,8 +18,10 @@ router.register('admin/users', views.AdminUsersView, basename="admin-users-list"
 
 
 urlpatterns = [
+    path('add/', EmployeeAddView.as_view(),
+         name='add'),
     path('register/', EmployeeRegisterView.as_view(),
-         name='register'),
+         name='add'),
         path('user/google-sign-in/', GoogleSigninView.as_view(), 
          name='user-register'),
    path('profile/<int:pk>/', EmployeeProfileView.as_view(),

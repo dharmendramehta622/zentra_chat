@@ -19,6 +19,7 @@ from apps.users.models import  ResetPassword, User
 from rest_framework.permissions import AllowAny
 from apps.users.permissions import IsEmployee  
 from apps.users.serializers import (
+                                    EmployeeAddSerializer,
                                     EmployeeRegisterSerializer,
                                     LoginSerializer,
                                     LoginSendOTPSerializer,
@@ -47,6 +48,34 @@ def _get_admin_token(user):
     
 generator = Generator()
 
+class EmployeeAddView(generics.CreateAPIView):
+    serializer_class = EmployeeAddSerializer
+    authentication_classes = []  # Allow unauthenticated access
+    permission_classes = [AllowAny]  # Allow all permissions
+
+    def get(self, request, *args, **kwargs):
+        # Handle GET requests here if needed
+        return Response(
+            {"message": "GET method is not supported for this endpoint."},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid(raise_exception=True): 
+                user = serializer.save() 
+                
+            return Response(
+                {
+                    "data": f"User added successfully. Email address is {user.email}",
+                    "status": "Success",
+                },
+                status.HTTP_201_CREATED
+            )
+        except APIException as e:
+            return Response({"error": str(e)}, status=e.status_code)
+
 class EmployeeRegisterView(generics.CreateAPIView):
     serializer_class = EmployeeRegisterSerializer
     authentication_classes = []  # Allow unauthenticated access
@@ -62,33 +91,15 @@ class EmployeeRegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid(raise_exception=True): 
-                existing_usernames = list(User.objects.values_list('username', flat=True))
-                print(existing_usernames)
-                payload = {
-                    'first_name': serializer.validated_data['first_name'],
-                    'last_name': serializer.validated_data['last_name'],
-                    'dob': serializer.validated_data['dob'].strftime('%d-%m-%Y'),
-                    'existing_usernames': existing_usernames
-                }
-                user_data = generator.create_user(**payload)
-                
-                user = User(
-                    first_name=serializer.validated_data['first_name'],
-                    last_name=serializer.validated_data['last_name'],
-                    email=serializer.validated_data['email'],
-                    dob=serializer.validated_data['dob'],
-                    username=user_data['username']
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()  
+                return Response(
+                    {
+                        "data": "Please confirm your email to complete the registration.",
+                        "status": "Success",
+                    },
+                    status.HTTP_201_CREATED
                 )
-                user.set_password(user_data['password'])
-                user.save()
-            return Response(
-                {
-                    "data": "Please confirm your email to complete the registration.",
-                    "status": "Success",
-                },
-                status.HTTP_201_CREATED
-            )
         except APIException as e:
             return Response({"error": str(e)}, status=e.status_code)
 
