@@ -43,4 +43,18 @@ class User(AbstractUser):
     objects = UserManager()
 
 
+class ResetPassword(models.Model):
+    pw_reset_user = models.ForeignKey(User, related_name="pw_reset_user",
+                                      on_delete=models.CASCADE)
+    code = models.CharField(max_length=64, unique=True, default=None)
+
+    def __str__(self):
+        return str(self.pw_reset_user)
+
+    class Meta:
+        verbose_name = "Reset Password"
+        verbose_name_plural = "Reset Password"
+
+
+
  

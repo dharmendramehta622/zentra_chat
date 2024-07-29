@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'apps.notices',
     'apps.users',
     'apps.clockin',
+     
     # third party apps 
     "graphene_django",
     'rest_framework',
@@ -197,8 +198,18 @@ CKEDITOR_CONFIGS = {
 }
 
 GRAPHENE = {
-    "SCHEMA": "django_root.schema.schema"
+    'SUBSCRIPTION_PATH': "/ws/graphql",
+    'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
+    "SCHEMA": "playground.schema.schema"
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = 'your-password'
 
 
 LOGIN_URL = '/accounts/login/'
