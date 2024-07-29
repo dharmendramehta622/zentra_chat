@@ -5,5 +5,4 @@ class UsersConfig(AppConfig):
     name = 'apps.users'
 
     def ready(self):
-        print("UsersConfig ready method called")
         import apps.users.signals  # Ensure this line is correct

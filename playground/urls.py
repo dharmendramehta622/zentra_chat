@@ -31,9 +31,9 @@ router = DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('apps.website.urls')),
-    path('user',include('apps.users.urls')),
-    path('news',include('apps.news.urls')),
-    path('attendance',include('apps.clockin.urls')),
+    path('user/',include('apps.users.urls')),
+    path('news/',include('apps.news.urls')),
+    path('attendance/',include('apps.clockin.urls')),
 
     #graphl view    
     url(r"graphql", GraphQLView.as_view(graphiql=True)),

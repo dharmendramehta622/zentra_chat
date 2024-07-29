@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser,Group,Permission
 from django.urls import reverse
 from apps.users.managers import UserManager
+import uuid 
 
 # Create your models here.
 class User(AbstractUser):
-    username = None 
+    username = models.CharField(max_length=150, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role = models.CharField(max_length=12, error_messages={
         'required': "Role must be provided"
     })
@@ -15,6 +17,7 @@ class User(AbstractUser):
     phone_no = models.CharField(max_length=16,)
     user_image = models.ImageField(upload_to="user_image",)
     is_active = models.BooleanField(default=False)
+    dob = models.DateField(auto_now=True)
     date_joined = models.DateTimeField(auto_now=True)
     email_verified = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, blank=True, null=True)
@@ -31,7 +34,7 @@ class User(AbstractUser):
         related_name='custom_user_set',  # This is the key change
         blank=True,
     )
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
     def __unicode__(self):

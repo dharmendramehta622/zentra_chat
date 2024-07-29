@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
+from apps.utils.generators import Generator
 from playground.settings import EMAIL_HOST_USER,EMAIL_PORT,EMAIL_HOST_PASSWORD,EMAIL_BACKEND
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import api_view
@@ -43,6 +44,8 @@ def _get_admin_token(user):
         'access': str(_token.access_token),
     }    
     
+    
+generator = Generator()
 
 class EmployeeRegisterView(generics.CreateAPIView):
     serializer_class = EmployeeRegisterSerializer
@@ -59,19 +62,26 @@ class EmployeeRegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                otp = "".join(random.choices(string.digits, k=6))
-                context = {
-                    "otp": otp,
+            if serializer.is_valid(raise_exception=True): 
+                existing_usernames = list(User.objects.values_list('username', flat=True))
+                print(existing_usernames)
+                payload = {
+                    'first_name': serializer.validated_data['first_name'],
+                    'last_name': serializer.validated_data['last_name'],
+                    'dob': serializer.validated_data['dob'].strftime('%d-%m-%Y'),
+                    'existing_usernames': existing_usernames
                 }
-                subject = f'OTP for User Account Activation: {otp} | InvestLab'
-                recipient =serializer.validated_data["email"]
-                text_content = render_to_string("users/user_verify.html", context)
-                send_email(subject=subject,content=text_content,receiver=recipient)
-                user = serializer.save()
-                _user = User.objects.get(email=user)
-                _user.otp = otp
-                _user.save()
+                user_data = generator.create_user(**payload)
+                
+                user = User(
+                    first_name=serializer.validated_data['first_name'],
+                    last_name=serializer.validated_data['last_name'],
+                    email=serializer.validated_data['email'],
+                    dob=serializer.validated_data['dob'],
+                    username=user_data['username']
+                )
+                user.set_password(user_data['password'])
+                user.save()
             return Response(
                 {
                     "data": "Please confirm your email to complete the registration.",
@@ -106,7 +116,6 @@ class GoogleSigninView(generics.CreateAPIView):
                 subject = f'OTP for User Account Activation: {otp} | InvestLab'
                 recipient =serializer.validated_data["email"]
                 text_content = render_to_string("users/user_verify.html", context)
-                send_email(subject=subject,content=text_content,receiver=recipient)
                 user = serializer.save()
                 _user = User.objects.get(email=user)
                 _user.otp = otp
@@ -148,7 +157,6 @@ class ResetPasswordAPIView(generics.CreateAPIView):
             recipient  = user.email
             text_content = render_to_string("users/password_reset.html",
                                             context)
-            send_email(subject=subject,content=text_content,receiver=recipient )
             return Response(
                 {"data": "Please check your email to  reset your password.","status":"Success"},
                 status=status.HTTP_201_CREATED,
@@ -293,7 +301,6 @@ class LoginSendOTPView(generics.CreateAPIView):
                 subject = f'OTP for User Login: {otp} | InvestLab'
                 recipient  =serializer.validated_data["email"]
                 text_content = render_to_string("users/user_verify.html", context)
-                send_email(subject=subject,content=text_content,receiver=recipient )
                 return Response(
                         {
                             "status":"Success",
@@ -327,7 +334,6 @@ class LoginVerifyOTPView(generics.CreateAPIView):
                 subject = f'Account Login: | InvestLab'
                 recipient  = user.email
                 text_content = render_to_string("users/login_info.html")
-                send_email(subject=subject,content=text_content,receiver=recipient )
                 return Response(
                         {
                             "status":"Success",

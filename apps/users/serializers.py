@@ -2,54 +2,33 @@ from django.contrib.auth import get_user_model, password_validation
 from rest_framework import serializers, status
 from validate_email_address import validate_email
 from apps.utils.mailbox_validation import MailboxValidation
+
 User = get_user_model()
 
 
 class EmployeeRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(style={"input_type": "password"})
-    confirm_password = serializers.CharField(
-        style={"input_type": "password"}, write_only=True
-    )
+    dob = serializers.DateField(
+        input_formats=['%d-%m-%Y'],  # Accepts DOB in DD-MM-YYYY format
+        format='%d-%m-%Y'  # Outputs DOB in DD-MM-YYYY format
+    ) 
 
     class Meta:
         model = User
-        fields = [
+        fields = [  
             "first_name",
-            "last_name", 
+            "last_name",
             "email",
-            "password",
-            "confirm_password",
+            "dob",
         ]
-
-    # def validate_email(self, attrs):
-    #     _result = validate_email(email=attrs, verify=True)
-    #     if _result is True:
-    #         return attrs
-    #     raise MailboxValidation("This mailbox doesn't exist. Please input a valid one.",
-    #                             'email', status_code=status.HTTP_404_NOT_FOUND)
-
-    def validate(self, data):
-        """Validate user password."""
-        try:
-            password = data["password"]
-            password_c = data["confirm_password"]
-        except KeyError as e:
-            print(e)
-        else:
-            if password != password_c:
-                raise serializers.ValidationError(
-                    "Password don't match. Please confirm your password."
-                )
-            password_validation.validate_password(password)
-            return data
+ 
 
     def create(self, validated_data):
         """Create user w/ `employee` role."""
-        validated_data.pop("confirm_password")
+        # validated_data.pop("confirm_password")
         user = User.objects.create_user(**validated_data)
         user.role = "employee"
-        # user.is_active =True
-        # user.email_verified =True
+        # user.is_active = True
+        # user.email_verified = True
         user.save()
         return user
 
