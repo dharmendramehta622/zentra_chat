@@ -102,46 +102,6 @@ class EmployeeRegisterView(generics.CreateAPIView):
                 )
         except APIException as e:
             return Response({"error": str(e)}, status=e.status_code)
-
-
-class GoogleSigninView(generics.CreateAPIView):
-    serializer_class = EmployeeRegisterSerializer
-    authentication_classes = []  # Allow unauthenticated access
-    permission_classes = [AllowAny]  # Allow all permissions
-
-    def get(self, request, *args, **kwargs):
-        # Handle GET requests here if needed
-        return Response(
-            {"message": "GET method is not supported for this endpoint."},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
-
-    def create(self, request, *args, **kwargs):
-        try:
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                otp = "".join(random.choices(string.digits, k=6))
-                context = {
-                    "otp": otp,
-                }
-                subject = f'OTP for User Account Activation: {otp} | InvestLab'
-                recipient =serializer.validated_data["email"]
-                text_content = render_to_string("users/user_verify.html", context)
-                user = serializer.save()
-                _user = User.objects.get(email=user)
-                _user.otp = otp
-                _user.save()
-            return Response(
-                {
-                    "data": "Please confirm your email to complete the registration.",
-                    "status": "Success",
-                },
-                status.HTTP_201_CREATED
-            )
-        except APIException as e:
-            return Response({"error": str(e)}, status=e.status_code)
-
-  
   
 class ResetPasswordAPIView(generics.CreateAPIView):
     serializer_class = ResetPasswordSerializer
@@ -241,6 +201,7 @@ class LoginView(generics.CreateAPIView):
             try:
                 user = User.objects.get(
                     email=serializer.validated_data["email"])
+                print(serializer.validated_data)
             except User.DoesNotExist:
                 return Response(
                     {
@@ -257,7 +218,7 @@ class LoginView(generics.CreateAPIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST)
             #admin user token
-            if user.is_active and user.id == 1:
+            if user.is_active and user.is_superuser:
                 login(request, user)
                 return Response(
                         {

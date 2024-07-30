@@ -5,7 +5,7 @@ from validate_email_address import validate_email
 from apps.utils.generators import Generator
 from apps.utils.mailbox_validation import MailboxValidation
 
-
+User = get_user_model()
 generator = Generator()
 
 

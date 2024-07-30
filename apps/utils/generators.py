@@ -1,4 +1,9 @@
-from apps.users.models import User
+from django.contrib.auth import get_user_model
+import random
+import string 
+
+
+User = get_user_model()
 
 class Generator:
 
@@ -19,7 +24,10 @@ class Generator:
             
         return username
 
-
+    def generate_random_phone_no(self):
+        """Generate a random phone number with 10 digits."""
+        return ''.join(random.choices(string.digits, k=10))
+    
     def create_user(self, **kwargs):
 
         """Create a user with a unique username and a password based on DOB."""
@@ -31,8 +39,8 @@ class Generator:
                
         first_name = kwargs.get("first_name")
         last_name = kwargs["last_name"]
-        email = kwargs.get("email")
-        phone_no = kwargs.get("phone_no")
+        email = kwargs.get("email")  
+        phone_no = kwargs.get("phone_no") or self.generate_random_phone_no()
         
         # Generate username and set password
         username = self.generate_username(first_name, last_name, existing_usernames)

@@ -93,7 +93,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
 ]
 
 
@@ -214,3 +214,4 @@ EMAIL_HOST_PASSWORD = 'your-password'
 
 
 LOGIN_URL = '/accounts/login/'
+AUTH_USER_MODEL = 'users.User'

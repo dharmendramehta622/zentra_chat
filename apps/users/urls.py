@@ -7,7 +7,7 @@ from apps.users import views
 from apps.users.views import (EmployeeAddView,EmployeeRegisterView,
                               LoginView, EmployeeProfileView,
                               ResetPasswordAPIView, ResetPasswordVerifyAPIView,
-                              EmployeeProfileView, VerifyOTPView, LoginSendOTPView,LoginVerifyOTPView,GoogleSigninView
+                              EmployeeProfileView, VerifyOTPView, LoginSendOTPView,LoginVerifyOTPView, 
                               )
 
 router = DefaultRouter()
@@ -18,25 +18,20 @@ router.register('admin/users', views.AdminUsersView, basename="admin-users-list"
 
 
 urlpatterns = [
+    path('', include(router.urls)),
+     
     path('add/', EmployeeAddView.as_view(),
          name='add'),
     path('register/', EmployeeRegisterView.as_view(),
-         name='add'),
-        path('user/google-sign-in/', GoogleSigninView.as_view(), 
-         name='user-register'),
+         name='add'), 
    path('profile/<int:pk>/', EmployeeProfileView.as_view(),
          name='user-profile'), 
-    path('profile/', include(router.urls)),
     path('reset-password/', ResetPasswordAPIView.as_view(),
          name='reset-password'),
     path('reset-password-verify/', ResetPasswordVerifyAPIView.as_view(),
          name='reset-password-verify'),
-    path('verify-otp/', VerifyOTPView.as_view(), name='verify-otp'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('login-send-otp/', LoginSendOTPView.as_view(), name='login'),
-    path('login-verify-otp/', LoginVerifyOTPView.as_view(), name='login'),
+    path('login/', LoginView.as_view(), name='login'), 
     path('', views.home, name='home'),
-    path('success/', views.success_msg, name='success_msg'),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('success/', views.success_msg, name='success_msg'), 
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

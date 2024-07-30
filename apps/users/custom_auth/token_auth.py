@@ -10,7 +10,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         _groups = user.groups.all()
         last_index = len(_groups)-1
         token['user-info'] = {
-            "user_id":user.id,
+            "user_id":str(user.id),
             "role": user.role,
             "is_superuser": user.is_superuser,
             "is_active": user.is_active,
@@ -24,7 +24,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         _groups = user.groups.all()
         last_index = len(_groups)-1
         token['user-info'] = {
-            "user_id":user.id,
+            "user_id":str(user.id),
             "role": 'admin',
             "is_superuser": user.is_superuser,
             "is_active": user.is_active,
