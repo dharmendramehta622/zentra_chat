@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import User
+from apps.utils.email import EmailProcessor
 import random
 import string
 
@@ -10,22 +11,20 @@ import string
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
     print("send_welcome_email signal triggered")  # Debug statement
-    subject = 'Welcome to Our Platform'
     if created:
-        otp = "".join(random.choices(string.digits, k=6))
-        context = {
-            "otp": otp,
-        } 
-        # subject = f'OTP for User Account Activation: {otp} | Attendo'
-        # recipient =serializer.validated_data["email"]
-        # text_content = render_to_string("users/user_verify.html", context)
-        message = f'Hi {instance.email},\n\nThank you for signing up on our platform. We are excited to have you on board!'
-        print(subject)
-        print(message)
-        # Uncomment these lines to send an actual email
-        # from_email = settings.DEFAULT_FROM_EMAIL
-        # recipient_list = [instance.email]
-        # send_mail(subject, message, from_email, recipient_list)
+        print(instance.email)
+        context = {'link': f'https://www.hamrokk.com/onboard/{instance.id}'}
+        
+        email_processor = EmailProcessor(
+            subject='Account Activation',
+            message='',
+            html_message_template='users/welcome.html',
+            context=context
+        )
+                    
+        email_processor.send_mail(
+            receipient=instance.email
+        )
 
 @receiver(post_delete, sender=User)
 def send_goodbye_email(sender, instance, **kwargs):

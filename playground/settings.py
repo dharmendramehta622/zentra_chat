@@ -15,8 +15,6 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 APP_LOG_LEVEL = os.path.join(BASE_DIR, 'logs/app.log')
 ERROR_LOG_LEVEL = os.path.join(BASE_DIR, 'logs/error.log')
@@ -84,9 +82,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'ckeditor',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -94,6 +94,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 
@@ -206,11 +207,12 @@ GRAPHENE = {
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'your-password'
+EMAIL_HOST = 'mail.hamrokk.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True  # Use SSL for port 465
+EMAIL_USE_TLS = False  # Disable TLS
+EMAIL_HOST_USER = 'no-reply@hamrokk.com'
+EMAIL_HOST_PASSWORD = 'E4DOJ309#esf'
 
 
 LOGIN_URL = '/accounts/login/'

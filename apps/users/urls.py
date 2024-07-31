@@ -18,7 +18,7 @@ router.register('admin/users', views.AdminUsersView, basename="admin-users-list"
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+#     path('', include(router.urls)),
      
     path('add/', EmployeeAddView.as_view(),
          name='add'),

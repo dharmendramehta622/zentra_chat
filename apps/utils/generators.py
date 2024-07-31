@@ -46,7 +46,7 @@ class Generator:
         username = self.generate_username(first_name, last_name, existing_usernames)
         
         if not email:
-            email = f"{username}@attendo.com"
+            email = f"{username}@hamrokk.com"
             
         user = User.objects.create_user(
             first_name=first_name,

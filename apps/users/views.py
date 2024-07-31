@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from apps.users.models import  ResetPassword, User
 from rest_framework.permissions import AllowAny
 from apps.users.permissions import IsEmployee  
+from apps.utils.email import EmailProcessor
 from apps.users.serializers import (
                                     EmployeeAddSerializer,
                                     EmployeeRegisterSerializer,
@@ -83,6 +84,19 @@ class EmployeeRegisterView(generics.CreateAPIView):
 
     def get(self, request, *args, **kwargs):
         # Handle GET requests here if needed
+        
+        context = {'link': 'https://www.youtube.com/watch?v=8jF5RmI2YNU&list=RD8jF5RmI2YNU&start_radio=1'}
+        
+        email_processor = EmailProcessor(
+            subject='Account Activation',
+            message='',
+            html_message_template='users/welcome.html',
+            context=context
+        )
+                    
+        email_processor.send_mail(
+            receipient='dharmendra.mehta@hamrokk.com'
+        )
         return Response(
             {"message": "GET method is not supported for this endpoint."},
             status=status.HTTP_405_METHOD_NOT_ALLOWED
@@ -124,7 +138,7 @@ class ResetPasswordAPIView(generics.CreateAPIView):
                 "user": user.first_name,
                 "code": user_password_reset.code
             }
-            subject = "Password Reset Code for InvestLab"
+            subject = "Password Reset Code for HamroKK"
             recipient  = user.email
             text_content = render_to_string("users/password_reset.html",
                                             context)
@@ -270,7 +284,7 @@ class LoginSendOTPView(generics.CreateAPIView):
                 context = {
                     "otp": otp
                 }
-                subject = f'OTP for User Login: {otp} | InvestLab'
+                subject = f'OTP for User Login: {otp} | HamroKK'
                 recipient  =serializer.validated_data["email"]
                 text_content = render_to_string("users/user_verify.html", context)
                 return Response(
@@ -303,7 +317,7 @@ class LoginVerifyOTPView(generics.CreateAPIView):
                 user.save()
                 print(user)
                 login(request, user)
-                subject = f'Account Login: | InvestLab'
+                subject = f'Account Login: | HamroKK'
                 recipient  = user.email
                 text_content = render_to_string("users/login_info.html")
                 return Response(
