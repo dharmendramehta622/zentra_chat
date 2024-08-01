@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
 from apps.utils.generators import Generator
-from playground.settings import EMAIL_HOST_USER,EMAIL_PORT,EMAIL_HOST_PASSWORD,EMAIL_BACKEND
+from attendo.settings import EMAIL_HOST_USER,EMAIL_PORT,EMAIL_HOST_PASSWORD,EMAIL_BACKEND
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound, ValidationError

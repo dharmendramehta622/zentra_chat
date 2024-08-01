@@ -25,6 +25,7 @@ drf-yasg
 django-ckeditor==6.2.0
 requests_toolbelt
 python-decouple
+python-dotenv
 dataclasses-json
 py3dns==3.2.1
 validate-email-address==1 

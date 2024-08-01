@@ -4,9 +4,9 @@ python3 manage.py makemigrations
 python3 manage.py migrate
  
 # Set environment variables
-export DJANGO_SUPERUSER_USERNAME="playground_admin"
+export DJANGO_SUPERUSER_USERNAME="attendo_admin"
 export DJANGO_SUPERUSER_PASSWORD="CRACE4DOJ309#esf"
-export DJANGO_SUPERUSER_EMAIL="admin@playground.com"  # Make sure to set this value
+export DJANGO_SUPERUSER_EMAIL="admin@attendo.com"  # Make sure to set this value
 
 # DJANGO_SUPERUSER_USERNAME=$SUPERUSER_USERNAME \
 #     DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD \
