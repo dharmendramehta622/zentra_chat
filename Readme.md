@@ -23,7 +23,7 @@ This is a Django-based web application designed to Attendance Management System.
     ```sh
     git clone https://your_username:your_password@github.com/Hamro-Kura-Kani/attendo.git
     or 
-    git clone https://your_username:your_password@github.com/Hamro-Kura-Kani/attendo.git
+    git clone https://your_access_token:your_access_token@github.com/Hamro-Kura-Kani/attendo.git
     cd attendo
     ```
 
