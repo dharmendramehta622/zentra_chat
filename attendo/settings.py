@@ -201,8 +201,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Swagger API Documentation View
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Play Ground  API',
-    'DESCRIPTION': 'PLAY-GROUND-API',
+    'TITLE': 'Attendo  API',
+    'DESCRIPTION': 'ATTENDO-API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

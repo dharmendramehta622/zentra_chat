@@ -31,7 +31,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('',include('apps.website.urls')),
+    # path('',include('apps.website.urls')),
     path('monitor', include('django_prometheus.urls')),
     path('user/',include('apps.users.urls')),
     path('news/',include('apps.news.urls')),
