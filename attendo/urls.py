@@ -29,6 +29,7 @@ admin.site.site_title = 'Welcome to Play Ground Admin Portal'
 router = DefaultRouter()
 
 urlpatterns = [
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('',include('apps.website.urls')),
     path('monitor', include('django_prometheus.urls')),
