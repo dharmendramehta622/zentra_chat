@@ -1,7 +1,6 @@
 # Django Project
 
 ## Introduction
-
 This is a Django-based web application designed to Attendance Management System. It includes features such as Authentication and Authorization, Clockins, etc.
 
 ## Features
