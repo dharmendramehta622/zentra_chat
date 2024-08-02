@@ -226,7 +226,7 @@ EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')  # Use SSL for port 465
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')  # Disable TLS
+# EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')  # Disable TLS
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
  

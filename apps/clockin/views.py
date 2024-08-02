@@ -8,6 +8,7 @@ from rest_framework.permissions import  AllowAny
 # Create your views here.
 class ClockInView(
     mixins.ListModelMixin,
+    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet

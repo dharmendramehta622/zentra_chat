@@ -2,35 +2,31 @@ import random
 import string
 from rest_framework.exceptions import APIException
 from django.contrib.auth import login
-from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
 from apps.utils.generators import Generator
-from attendo.settings import EMAIL_HOST_USER,EMAIL_PORT,EMAIL_HOST_PASSWORD,EMAIL_BACKEND
 from rest_framework import generics, mixins, status, viewsets
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
-from apps.users.models import  ResetPassword, User
+from apps.users.models import  ResetPassword
+from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
 from apps.users.permissions import IsEmployee  
 from apps.utils.email import EmailProcessor
 from apps.users.serializers import (
                                     EmployeeAddSerializer,
                                     EmployeeRegisterSerializer,
-                                    LoginSerializer,
-                                    LoginSendOTPSerializer,
-                                    LoginVerifyOTPSerializer,
-                                    EmployeeProfileSerializer,
+                                    LoginSerializer, 
                                     ResetPasswordSerializer,
                                     ResetPasswordVerifySerializer,
                                     UserSerializer,
                                     VerifyOTPSerializer)
 
+User = get_user_model()
 
 def _get_token(user):
     _token = MyTokenObtainPairSerializer.get_token(user)
@@ -241,7 +237,7 @@ class LoginView(generics.CreateAPIView):
                         },
                         status=status.HTTP_200_OK,
                     )    
-            # normal user    
+            # normal user  
             if user.is_active and user.role == 'employee':
                 login(request, user)
                 return Response(
@@ -256,126 +252,14 @@ class LoginView(generics.CreateAPIView):
                     {"data": "Please activate your account.","status":"Failed"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
-class LoginSendOTPView(generics.CreateAPIView):
-    serializer_class = LoginSendOTPSerializer
-    authentication_classes = []  # Allow unauthenticated access
-    permission_classes = [AllowAny]  # Allow all permissions
-    model = User
-    success_url = reverse_lazy("login")
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            try:
-                user = User.objects.get(
-                    email=serializer.validated_data["email"])
-            except User.DoesNotExist:
-                return Response(
-                    {
-                        "data": "User with this email does not exist."  ,"status":"Failed"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST)
-            
-            if user.is_active and user.role == 'employee':
-                login(request, user)
-                otp = "".join(random.choices(string.digits, k=6))
-                user.otp = otp
-                user.save()
-                context = {
-                    "otp": otp
-                }
-                subject = f'OTP for User Login: {otp} | HamroKK'
-                recipient  =serializer.validated_data["email"]
-                text_content = render_to_string("users/user_verify.html", context)
-                return Response(
-                        {
-                            "status":"Success",
-                            "data":"Please check you email for OTP."
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-            else:
-                return Response(
-                    {"data": "Please activate your account.","status":"Success"},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
-                
-class LoginVerifyOTPView(generics.CreateAPIView):
-    serializer_class = LoginVerifyOTPSerializer
-    authentication_classes = []  # Allow unauthenticated access
-    permission_classes = [AllowAny]  # Allow all permissions
-    model = User
-    success_url = reverse_lazy("login")
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            try:
-                user = User.objects.get(
-                otp=serializer.validated_data["otp"])
-                user.otp = None 
-                user.save()
-                print(user)
-                login(request, user)
-                subject = f'Account Login: | HamroKK'
-                recipient  = user.email
-                text_content = render_to_string("users/login_info.html")
-                return Response(
-                        {
-                            "status":"Success",
-                            "data":{"token":_get_token(user)}
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-            except User.DoesNotExist:
-                return Response(
-                    {
-                        "data": "Incorrect OTP."
-                     ,"status":"Failed"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST)
-
-class EmployeeProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = EmployeeProfileSerializer
-    permission_classes = [IsAuthenticated, IsEmployee]
-
-    def get_object(self): 
-        return User.objects.get(id=self.kwargs['pk'])
-
-    def retrieve(self, request, *args, **kwargs):
-        try:
-            profile = User.objects.get(id=self.kwargs['pk'])
-            if profile.role == 'employee':
-                user_data = self.serializer_class(
-                    profile, context={"request": request}).data
-                return Response(user_data, status=status.HTTP_200_OK)
-            else:
-                return Response({'data': "You are not allowed to access "
-                                "recruiter's profile in this way.","status":"Failed"},
-                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        except User.DoesNotExist as e:
-            raise NotFound({"data": "User does not exist.","status":"Failed"}) from e
-
-    def patch(self, request, *args, **kwargs):
-        serializer = EmployeeProfileSerializer(
-            self.get_object(), data=request.data,
-            partial=True, context={"request": request})
-        if serializer.is_valid(raise_exception=True):
-            if self.request.user.id == self.kwargs['pk']:
-                _user = serializer.save()
-                if _user.profile_is_set is False:
-                    _user.profile_is_set = True
-                    _user.save()
-                return Response(serializer.data)
-            raise ValidationError({"data": "You do not have permission to update the profile of other users.","status":"Failed"})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+ 
+ 
 class ProfileView( mixins.ListModelMixin,  mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,  
                   viewsets.GenericViewSet):
-    # queryset = User.objects.all()
+    
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsEmployee]
     
     
     def get_queryset(self):

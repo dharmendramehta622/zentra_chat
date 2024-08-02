@@ -27,7 +27,7 @@ class EmailProcessor:
         try: 
             msg = EmailMultiAlternatives(self.subject, self.message, self.email_from, recipient_list)
             msg.attach_alternative(html_message, "text/html")
-            msg.send()
+            msg.send(fail_silently=True) #Fail silently if email not found
         except BadHeaderError:
             return HttpResponse('Invalid header found.')
         return HttpResponse('Email sent successfully.')

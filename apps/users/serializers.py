@@ -57,15 +57,6 @@ class LoginSerializer(serializers.Serializer):
                                      write_only=True)
 
 
-class LoginSendOTPSerializer(serializers.Serializer):
-    model = User
-    email = serializers.EmailField() 
-    
-class LoginVerifyOTPSerializer(serializers.Serializer):
-    model = User
-    otp = serializers.CharField() 
-
-
 class LoginSerializer(serializers.Serializer):
     model = User
     email = serializers.EmailField()

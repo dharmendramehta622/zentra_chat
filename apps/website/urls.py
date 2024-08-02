@@ -1,13 +1,14 @@
-from django.urls import include, path
+from django.urls import include, path,re_path
 from rest_framework.routers import DefaultRouter
-from apps.website import views
+from apps.website.views import UserViewSet,OnboardView
 
 
 router = DefaultRouter()
 
-router.register('', views.index, basename='index')
+router = DefaultRouter()
+router.register('', UserViewSet, basename='user')
 
 urlpatterns = [
-    # path('',include(router.urls)),
-     path('', views.index, name='index'),
+    path('', include(router.urls)),
+    path('onboard/<uuid:user_id>/', OnboardView.as_view(), name='onboard'),
 ]

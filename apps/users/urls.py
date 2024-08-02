@@ -1,31 +1,28 @@
 from django.urls import path
 from django.urls.conf import include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (TokenObtainPairView,
+from rest_framework_simplejwt.views import ( 
                                             TokenRefreshView)
 from apps.users import views
 from apps.users.views import (EmployeeAddView,EmployeeRegisterView,
-                              LoginView, EmployeeProfileView,
-                              ResetPasswordAPIView, ResetPasswordVerifyAPIView,
-                              EmployeeProfileView, VerifyOTPView, LoginSendOTPView,LoginVerifyOTPView, 
+                              LoginView, ResetPasswordAPIView, ResetPasswordVerifyAPIView,
+                              VerifyOTPView  
                               )
 
 router = DefaultRouter()
-router.register('', views.ProfileView,
+router.register('info', views.ProfileView,
                 basename="user-profile") 
 router.register('admin/users', views.AdminUsersView, basename="admin-users-list")
 
 
 
 urlpatterns = [
-#     path('', include(router.urls)),
-     
+    path('', include(router.urls)),
+
     path('add/', EmployeeAddView.as_view(),
          name='add'),
     path('register/', EmployeeRegisterView.as_view(),
-         name='add'), 
-   path('profile/<int:pk>/', EmployeeProfileView.as_view(),
-         name='user-profile'), 
+         name='add'),  
     path('reset-password/', ResetPasswordAPIView.as_view(),
          name='reset-password'),
     path('reset-password-verify/', ResetPasswordVerifyAPIView.as_view(),
