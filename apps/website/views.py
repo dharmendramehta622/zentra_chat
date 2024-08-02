@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from django.shortcuts import render,redirect
 from .forms import OnboardForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.contrib.auth import get_user_model
 import uuid
@@ -47,10 +47,9 @@ class OnboardView(View):
                 
                 return render(request, 'onboard_form.html', {'form': form})
             else:
-                return   HttpResponse("User is already active", status=400)
-            
+                return JsonResponse({"error": "Invalid user ID format or user not found"}, status=400)
         except (ValueError, User.DoesNotExist):
-                return Response({"error": "Invalid user ID format or user not found"}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({"error": "Invalid user ID format or user not found"}, status=status.HTTP_400_BAD_REQUEST)
           
                 
 #E4DOJ309#ESF
