@@ -10,7 +10,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
     
     if created:
         print("send_welcome_email signal triggered")  # Debug statement
-        context = {'link': f'https://www.hamrokk.com/onboard/{instance.id}/'}
+        context = {'link': f'https://api.hamrokk.com/onboard/{instance.id}/'}
         
         email_processor = EmailProcessor(
             subject='Account Activation',
