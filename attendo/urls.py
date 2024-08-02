@@ -22,9 +22,9 @@ from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView,SpectacularRedocView,SpectacularSwaggerView
 
-admin.site.site_header = 'Play Ground Admin'                    # default: "Django Administration"
+admin.site.site_header = 'Attendo Admin'                    # default: "Django Administration"
 admin.site.index_title = 'Dashboard Area'                 # default: "Site administration"
-admin.site.site_title = 'Welcome to Play Ground Admin Portal'
+admin.site.site_title = 'Welcome to Attendo Admin Portal'
 
 router = DefaultRouter()
 
