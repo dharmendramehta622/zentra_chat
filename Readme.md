@@ -54,11 +54,11 @@ This is a Django-based web application designed to Attendance Management System.
 
 1. **Access the application:**
 
-    Open your web browser and navigate to `http://127.0.0.1:8000/`.
+    Open your web browser and navigate to `http://localhost:8000/`.
 
 2. **Admin panel:**
 
-    Navigate to `http://127.0.0.1:8000/admin/` and log in with the superuser credentials you created earlier(available in entryPoint.sh).
+    Navigate to `http://localhost/admin/` and log in with the superuser credentials you created earlier(available in entryPoint.sh).
 
 ## Testing
 

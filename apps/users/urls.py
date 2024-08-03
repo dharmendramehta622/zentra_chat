@@ -13,6 +13,7 @@ router = DefaultRouter()
 router.register('info', views.ProfileView,
                 basename="user-profile") 
 router.register('admin/users', views.AdminUsersView, basename="admin-users-list")
+router.register('admin/attendances', views.AdminAttendanceView, basename="admin-attendance-list")
 
 
 

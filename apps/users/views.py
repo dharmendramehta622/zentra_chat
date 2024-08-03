@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from apps.clockin.serializers import AttendanceSerializer
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
 from apps.utils.generators import Generator
 from rest_framework import generics, mixins, status, viewsets
@@ -211,7 +212,6 @@ class LoginView(generics.CreateAPIView):
             try:
                 user = User.objects.get(
                     email=serializer.validated_data["email"])
-                print(serializer.validated_data)
             except User.DoesNotExist:
                 return Response(
                     {
@@ -288,6 +288,8 @@ def success_msg(request):
 
 
 #admin 
+from apps.clockin.models import Attendance
+from rest_framework.pagination import LimitOffsetPagination
 
 class AdminUsersView(
     mixins.ListModelMixin,
@@ -299,6 +301,31 @@ class AdminUsersView(
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser,IsAuthenticated]
+    pagination_class = LimitOffsetPagination  # Explicitly set pagination class if needed
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Include related details for each many-to-many field
+        queryset = queryset.prefetch_related()
+        return queryset
+
+    def get_object(self):
+        try:
+            return User.objects.get(id=self.kwargs['pk'])
+        except User.DoesNotExist as e:
+            raise NotFound({"message": "Data not found"}) from e          
+              
+class AdminAttendanceView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
     permission_classes = [IsAdminUser,IsAuthenticated]
 
     def get_queryset(self):
