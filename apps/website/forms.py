@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 
 class OnboardForm(forms.ModelForm):
-    new_password = forms.CharField(widget=forms.PasswordInput, label='New Password')
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Confirm Password')
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password'}), label='New Password')
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}), label='Confirm Password')
 
     class Meta:
         model = User
@@ -14,6 +14,8 @@ class OnboardForm(forms.ModelForm):
         # Set the username field as disabled and not required
         self.fields['username'].disabled = True
         self.fields['username'].required = False
+        # Add CSS class to username field
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username'})
 
     def clean(self):
         cleaned_data = super().clean()

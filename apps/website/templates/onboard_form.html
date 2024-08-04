@@ -1,14 +1,18 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Onboard User: {{username}}</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Onboard Form</title>
+        <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    </head>
 <body>
-    <h1>Onboard User: {{username}}</h1>
+    <h2>Onboard Form</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Save</button>
+        <button type="submit" class="btn-submit">Submit</button>
     </form>
 </body>
 </html>
