@@ -246,6 +246,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    '/home/hamrokkc/api.hamrokk.com/attendo/staticfiles',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
