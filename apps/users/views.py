@@ -290,6 +290,9 @@ def success_msg(request):
 #admin 
 from apps.clockin.models import Attendance
 from rest_framework.pagination import LimitOffsetPagination
+from django.utils.dateparse import parse_date
+from django.db.models import Q
+from django.utils import timezone
 
 class AdminUsersView(
     mixins.ListModelMixin,
@@ -331,7 +334,40 @@ class AdminAttendanceView(
     def get_queryset(self):
         queryset = super().get_queryset()
         # Include related details for each many-to-many field
-        queryset = queryset.prefetch_related(   )
+                # Get the start_date, end_date, and username from query params
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        search_query = self.request.query_params.get('search_query')
+        
+        '''
+        Filter the queryset based on the date range.
+        
+        Django is set to use timezone-aware datetimes, but the parse_date function returns naive 
+        datetime objects (datetimes without timezone information).
+        
+        You should ensure that the datetime objects you create are timezone-aware.
+        '''
+        if start_date:
+            start_date = parse_date(start_date)
+            if start_date:
+                start_date = timezone.make_aware(timezone.datetime.combine(start_date, timezone.datetime.min.time()))
+                queryset = queryset.filter(created_at__gte=start_date)
+        if end_date:
+            end_date = parse_date(end_date)
+            if end_date:
+                end_date = timezone.make_aware(timezone.datetime.combine(end_date, timezone.datetime.max.time()))
+                queryset = queryset.filter(created_at__lte=end_date)
+
+ 
+        '''
+        Filter the queryset based on partial match for username, first_name, or last_names
+        '''
+        if search_query:
+            queryset = queryset.filter(
+                Q(user__username__icontains=search_query) |
+                Q(user__first_name__icontains=search_query) |
+                Q(user__last_name__icontains=search_query)
+            )
         return queryset
 
     def get_object(self):

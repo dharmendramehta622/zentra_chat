@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from apps.clockin.models import Attendance
-from django.utils import timezone
+from apps.users.serializers import UserSerializer
 
 class AttendanceSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     
     class Meta:
         model = Attendance
