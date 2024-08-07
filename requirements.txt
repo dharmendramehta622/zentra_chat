@@ -32,3 +32,6 @@ validate-email-address==1
 drf-spectacular==0.24.2
 drf-spectacular[sidecar]
 docutils
+daphne
+channels
+uvicorn[standard]

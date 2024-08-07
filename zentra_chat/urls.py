@@ -34,7 +34,8 @@ urlpatterns = [
     path('',include('apps.website.urls')),
     path('monitor', include('django_prometheus.urls')),
     path('user/',include('apps.users.urls')),
-    path('attendance/',include('apps.user_requests.urls')),
+    path('requests/',include('apps.user_requests.urls')),
+    path('chat/',include('apps.chatapp.urls')),
 
     #graphl view    
     url(r"graphql", GraphQLView.as_view(graphiql=True)),

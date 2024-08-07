@@ -94,6 +94,7 @@ CSRF_TRUSTED_ORIGINS = os.environ.get('ALLOWED_HOSTS').split(',')
 
 # Application definition 
 INSTALLED_APPS = [
+    'channels',
     'jazzmin',
     'corsheaders',
     'django.contrib.admin',
@@ -102,12 +103,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     # User created apps
     'apps.website',
     'apps.users',
     'apps.user_requests',
+    'apps.chatapp',
      
     # third party apps 
+
     "graphene_django",
     'rest_framework',
     'rest_framework_simplejwt',
@@ -115,6 +119,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'django_prometheus',
 ]
+
+ASGI_APPLICATION = 'zentra_chat.asgi.application'
 
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
@@ -191,7 +197,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'zentra_chat.wsgi.application'
+
 
 
 # Database
@@ -250,7 +256,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    '/home/hamrokkc/api.zenchat.com/zentra_chat/staticfiles',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 

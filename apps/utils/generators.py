@@ -31,11 +31,11 @@ class Generator:
     def create_user(self, **kwargs):
 
         """Create a user with a unique username and a password based on DOB."""
-        if not all(k in kwargs for k in ("first_name", "last_name", "dob" )):
-            raise ValueError("Not enough arguments provided. Expected: first_name, last_name, dob.")
+        if not all(k in kwargs for k in ("first_name", "last_name", "email","password", )):
+            raise ValueError("Not enough arguments provided. Expected: first_name, last_name, email, password.")
         
         existing_usernames = list(User.objects.values_list('username', flat=True))
-        dob = kwargs["dob"].strftime('%d-%m-%Y')
+        password = kwargs["password"] 
                
         first_name = kwargs.get("first_name")
         last_name = kwargs["last_name"]
@@ -46,17 +46,17 @@ class Generator:
         username = self.generate_username(first_name, last_name, existing_usernames)
         
         if not email:
-            email = f"{username}@hamrokk.com"
+            email = f"{username}@zenchat.com"
             
         user = User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
-            dob=dob,
             email=email,
             phone_no=phone_no,
             username=username,
-            password=dob
+            password=password
         )
         user.role = "employee"
+        user.is_active = True
         user.save()
         return user 

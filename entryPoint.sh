@@ -17,7 +17,12 @@ export DJANGO_SUPERUSER_EMAIL="admin@zentra.com"  # Make sure to set this value
 # Use the createsuperuser management command with environment variables
 python3 manage.py createcustomsuperuser
 
+# Run the Development Server
 python3 manage.py runserver 0.0.0.0:8000
-# daphne -b 0.0.0.0 -p 8000 home_automation.asgi:application
+
+
+# Run the ASGI server using Uvicorn
+# uvicorn zentra_chat.asgi:application --host 0.0.0.0 --port 8000
+# daphne  -p 8000 zentra_chat.asgi:application
 # gunicorn -w 4 -b 0.0.0.0:8000 main:app
 

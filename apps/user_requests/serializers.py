@@ -2,22 +2,32 @@ from rest_framework import serializers
 from apps.user_requests.models import UserRequest
 from apps.users.serializers import UserSerializer
 
-class AttendanceSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+class UserRequestSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
     
     class Meta:
         model = UserRequest
         fields = '__all__'
-        read_only_fields = [ 'user', 'created_at']
+        read_only_fields = [ 'sender','invite_status' 'created_at']
 
     def validate(self, data):
-        user = self.context['request'].user
-
+        sender = self.context['request'].user
+        receiver = data['receiver']
+        
+        if sender == receiver:
+            raise serializers.ValidationError("You cannot send request to yourself.")
+            
         # Only apply the check during creation
         if self.instance is None:
             # Check if there's an existing attendance without check_out
-            ongoing_attendance = UserRequest.objects.filter(user=user, check_out__isnull=True).exists()
-            if ongoing_attendance:
-                raise serializers.ValidationError("You already have a running check-in. Please check out before creating a new one.")
-
+            existing_request = UserRequest.objects.filter(sender=sender,receiver=receiver).exists()
+            if existing_request:
+                raise serializers.ValidationError("You already have a request sent to this user.")
         return data
+    
+    def create(self, validated_data):
+        validated_data.pop('user', None)
+        print(validated_data)  # Debugging line
+        # Set the sender to the current user from the request context
+        validated_data['sender'] = self.context['request'].user
+        return super().create(validated_data)

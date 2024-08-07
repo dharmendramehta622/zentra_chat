@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from apps.user_requests.serializers import AttendanceSerializer
+from apps.user_requests.serializers import UserRequestSerializer
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
 from apps.utils.generators import Generator
 from rest_framework import generics, mixins, status, viewsets
@@ -20,7 +20,7 @@ from apps.users.permissions import IsEmployee
 from apps.utils.email import EmailProcessor
 from apps.users.serializers import (
                                     EmployeeAddSerializer,
-                                    EmployeeRegisterSerializer,
+                                    UserRegisterSerializer,
                                     LoginSerializer, 
                                     ResetPasswordSerializer,
                                     ResetPasswordVerifySerializer,
@@ -45,55 +45,14 @@ def _get_admin_token(user):
     
     
 generator = Generator()
-
-class EmployeeAddView(generics.CreateAPIView):
-    serializer_class = EmployeeAddSerializer
+ 
+class UserRegisterView(generics.CreateAPIView):
+    serializer_class = UserRegisterSerializer
     authentication_classes = []  # Allow unauthenticated access
     permission_classes = [AllowAny]  # Allow all permissions
 
     def get(self, request, *args, **kwargs):
-        # Handle GET requests here if needed
-        return Response(
-            {"message": "GET method is not supported for this endpoint."},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
-
-    def create(self, request, *args, **kwargs):
-        try:
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid(raise_exception=True): 
-                user = serializer.save() 
-                
-            return Response(
-                {
-                    "data": f"User added successfully. Email address is {user.email}",
-                    "status": "Success",
-                },
-                status.HTTP_201_CREATED
-            )
-        except APIException as e:
-            return Response({"error": str(e)}, status=e.status_code)
-
-class EmployeeRegisterView(generics.CreateAPIView):
-    serializer_class = EmployeeRegisterSerializer
-    authentication_classes = []  # Allow unauthenticated access
-    permission_classes = [AllowAny]  # Allow all permissions
-
-    def get(self, request, *args, **kwargs):
-        # Handle GET requests here if needed
-        
-        context = {'link': 'https://www.youtube.com/watch?v=8jF5RmI2YNU&list=RD8jF5RmI2YNU&start_radio=1'}
-        
-        email_processor = EmailProcessor(
-            subject='Account Activation',
-            message='',
-            html_message_template='users/welcome.html',
-            context=context
-        )
-                    
-        email_processor.send_mail(
-            receipient='dharmendra.mehta@hamrokk.com'
-        )
+        # Handle GET requests here if needed  
         return Response(
             {"message": "GET method is not supported for this endpoint."},
             status=status.HTTP_405_METHOD_NOT_ALLOWED
@@ -130,15 +89,7 @@ class ResetPasswordAPIView(generics.CreateAPIView):
             )  # randomly_generated 6-digit-code
             user_password_reset = ResetPassword.objects.create(
                 pw_reset_user=user, code=code
-            )
-            context = {
-                "user": user.first_name,
-                "code": user_password_reset.code
-            }
-            subject = "Password Reset Code for HamroKK"
-            recipient  = user.email
-            text_content = render_to_string("users/password_reset.html",
-                                            context)
+            ) 
             return Response(
                 {"data": "Please check your email to  reset your password.","status":"Success"},
                 status=status.HTTP_201_CREATED,
@@ -236,22 +187,16 @@ class LoginView(generics.CreateAPIView):
                             "data":_get_admin_token(user)
                         },
                         status=status.HTTP_200_OK,
-                    )    
-            # normal user  
-            if user.is_active and user.role == 'employee':
-                login(request, user)
-                return Response(
-                        {
-                            "status":"Success",
-                            "data":_get_token(user)
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-            else:
-                return Response(
-                    {"data": "Please activate your account.","status":"Failed"},
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    )     
+            login(request, user)
+            return Response(
+                    {
+                        "status":"Success",
+                        "data":_get_token(user)
+                    },
+                    status=status.HTTP_200_OK,
                 )
+             
  
  
 class ProfileView( mixins.ListModelMixin,  mixins.RetrieveModelMixin,
@@ -288,13 +233,9 @@ def success_msg(request):
 
 
 #admin 
-from apps.user_requests.models import UserRequest
 from rest_framework.pagination import LimitOffsetPagination
-from django.utils.dateparse import parse_date
-from django.db.models import Q
-from django.utils import timezone
 
-class AdminUsersView(
+class  UserListView(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
@@ -304,13 +245,11 @@ class AdminUsersView(
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser,IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
     pagination_class = LimitOffsetPagination  # Explicitly set pagination class if needed
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        # Include related details for each many-to-many field
-        queryset = queryset.prefetch_related()
+        queryset = super().get_queryset().filter(is_superuser=False)
         return queryset
 
     def get_object(self):
@@ -318,60 +257,4 @@ class AdminUsersView(
             return User.objects.get(id=self.kwargs['pk'])
         except User.DoesNotExist as e:
             raise NotFound({"message": "Data not found"}) from e          
-              
-class AdminAttendanceView(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = UserRequest.objects.all()
-    serializer_class = AttendanceSerializer
-    permission_classes = [IsAdminUser,IsAuthenticated]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        # Include related details for each many-to-many field
-                # Get the start_date, end_date, and username from query params
-        start_date = self.request.query_params.get('start_date')
-        end_date = self.request.query_params.get('end_date')
-        search_query = self.request.query_params.get('search_query')
-        
-        '''
-        Filter the queryset based on the date range.
-        
-        Django is set to use timezone-aware datetimes, but the parse_date function returns naive 
-        datetime objects (datetimes without timezone information).
-        
-        You should ensure that the datetime objects you create are timezone-aware.
-        '''
-        if start_date:
-            start_date = parse_date(start_date)
-            if start_date:
-                start_date = timezone.make_aware(timezone.datetime.combine(start_date, timezone.datetime.min.time()))
-                queryset = queryset.filter(created_at__gte=start_date)
-        if end_date:
-            end_date = parse_date(end_date)
-            if end_date:
-                end_date = timezone.make_aware(timezone.datetime.combine(end_date, timezone.datetime.max.time()))
-                queryset = queryset.filter(created_at__lte=end_date)
-
- 
-        '''
-        Filter the queryset based on partial match for username, first_name, or last_names
-        '''
-        if search_query:
-            queryset = queryset.filter(
-                Q(user__username__icontains=search_query) |
-                Q(user__first_name__icontains=search_query) |
-                Q(user__last_name__icontains=search_query)
-            )
-        return queryset
-
-    def get_object(self):
-        try:
-            return User.objects.get(id=self.kwargs['pk'])
-        except User.DoesNotExist as e:
-            raise NotFound({"message": "Data not found"}) from e                
+      

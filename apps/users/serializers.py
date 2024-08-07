@@ -28,20 +28,15 @@ class EmployeeAddSerializer(serializers.ModelSerializer):
         user_data = generator.create_user(**validated_data)
         return user_data
     
-class EmployeeRegisterSerializer(serializers.ModelSerializer):
-    dob = serializers.DateField(
-        input_formats=['%d-%m-%Y'],  # Accepts DOB in DD-MM-YYYY format
-        format='%d-%m-%Y'  # Outputs DOB in DD-MM-YYYY format
-    ) 
+class UserRegisterSerializer(serializers.ModelSerializer): 
 
     class Meta:
         model = User
         fields = [  
             "first_name",
             "last_name",
-            "dob",
             "email",
-            "phone_no",
+            "password",
         ]
  
 
@@ -122,7 +117,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
         read_only_field = [
-               "id", "role", "email",  "phone_no",
+           "id", "role", "email",  "phone_no",
            "first_name", "last_name", 
            "user_image", 
              "last_login",

@@ -4,25 +4,21 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import ( 
                                             TokenRefreshView)
 from apps.users import views
-from apps.users.views import (EmployeeAddView,EmployeeRegisterView,
+from apps.users.views import ( UserRegisterView ,
                               LoginView, ResetPasswordAPIView, ResetPasswordVerifyAPIView,
-                              VerifyOTPView  
                               )
 
 router = DefaultRouter()
 router.register('info', views.ProfileView,
                 basename="user-profile") 
-router.register('admin/users', views.AdminUsersView, basename="admin-users-list")
-router.register('admin/attendances', views.AdminAttendanceView, basename="admin-attendance-list")
+router.register('users/list', views.UserListView, basename="users-list")
 
 
 
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('add/', EmployeeAddView.as_view(),
-         name='add'),
-    path('register/', EmployeeRegisterView.as_view(),
+    path('register/', UserRegisterView .as_view(),
          name='add'),  
     path('reset-password/', ResetPasswordAPIView.as_view(),
          name='reset-password'),

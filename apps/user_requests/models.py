@@ -10,7 +10,7 @@ User = get_user_model()
 class UserRequest(models.Model):
     sender = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sent_requests')
     receiver = models.ForeignKey(User,on_delete=models.CASCADE, related_name='received_requests')
-    invite_status = models.CharField(max_length=10,choices=INVITE_STATUS)
+    invite_status = models.CharField(max_length=10,choices=INVITE_STATUS,default="pending")
     created_at = models.DateTimeField(auto_now_add=True)  
 
     class Meta:
