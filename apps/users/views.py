@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from apps.clockin.serializers import AttendanceSerializer
+from apps.user_requests.serializers import AttendanceSerializer
 from apps.users.custom_auth.token_auth import MyTokenObtainPairSerializer
 from apps.utils.generators import Generator
 from rest_framework import generics, mixins, status, viewsets
@@ -288,7 +288,7 @@ def success_msg(request):
 
 
 #admin 
-from apps.clockin.models import Attendance
+from apps.user_requests.models import UserRequest
 from rest_framework.pagination import LimitOffsetPagination
 from django.utils.dateparse import parse_date
 from django.db.models import Q
@@ -327,7 +327,7 @@ class AdminAttendanceView(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Attendance.objects.all()
+    queryset = UserRequest.objects.all()
     serializer_class = AttendanceSerializer
     permission_classes = [IsAdminUser,IsAuthenticated]
 

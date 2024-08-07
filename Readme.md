@@ -1,11 +1,11 @@
 # Django Project
 
 ## Introduction
-This is a Django-based web application designed to Attendance Management System. It includes features such as Authentication and Authorization, Clockins, etc.
+This is a Django-based web application designed to UserRequest Management System. It includes features such as Authentication and Authorization, Clockins, etc.
 
 ## Features
 - Authentication and Authorization
-- Attendance
+- UserRequest
 - Admin Panel
 
 ## Prerequisites
@@ -20,10 +20,10 @@ This is a Django-based web application designed to Attendance Management System.
 1. **Clone the repository:**
 
     ```sh
-    git clone https://your_username:your_password@github.com/Hamro-Kura-Kani/attendo.git
+    git clone https://your_username:your_password@github.com/Hamro-Kura-Kani/zentra_chat.git
     or 
-    git clone https://your_access_token:your_access_token@github.com/Hamro-Kura-Kani/attendo.git
-    cd attendo
+    git clone https://your_access_token:your_access_token@github.com/Hamro-Kura-Kani/zentra_chat.git
+    cd zentra_chat
     ```
 
 2. **Create and activate a virtual environment:**
@@ -41,7 +41,7 @@ This is a Django-based web application designed to Attendance Management System.
 
 4. **Configure the database:**
 
-    Update the `DATABASES` setting in `attendo/settings.py` to match your database configuration.
+    Update the `DATABASES` setting in `zentra_chat/settings.py` to match your database configuration.
 
 5. **Apply migrations,Create a superuser,Run the development server:**
 

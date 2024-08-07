@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class NoticesConfig(AppConfig):
+class NewsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.notices'
+    name = 'apps.user_requests'

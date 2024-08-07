@@ -1,5 +1,5 @@
 from .serializers import AttendanceSerializer 
-from .models import Attendance 
+from .models import UserRequest 
 from rest_framework import mixins,viewsets,status
 from rest_framework.exceptions import NotFound,ValidationError
 from rest_framework.permissions import  IsAuthenticated
@@ -22,7 +22,7 @@ class ClockInView(
     permission_classes = [IsAuthenticated,IsEmployee,]  # Allow all permissions
     
     def get_queryset(self):
-        queryset = Attendance.objects.filter(user=self.request.user.id)
+        queryset = UserRequest.objects.filter(user=self.request.user.id)
         from_date = self.request.query_params.get('from_date')
         to_date = self.request.query_params.get('to_date')
         
@@ -41,8 +41,8 @@ class ClockInView(
 
     def get_object(self):
         try:
-            return Attendance.objects.get(id=self.kwargs['pk'])
-        except Attendance.DoesNotExist as e:
+            return UserRequest.objects.get(id=self.kwargs['pk'])
+        except UserRequest.DoesNotExist as e:
             raise NotFound({"message": "Data not found"}) from e
         
     def create(self, request, *args, **kwargs):

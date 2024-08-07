@@ -4,6 +4,14 @@ MRS = 'Mrs'
 MISS = 'Miss'
 DR = 'Dr'
 ER = 'Er'
+
+# invite status choices
+INVITE_STATUS = (
+    ('pending', 'Pending'),
+    ('accepted', 'Accepted'),
+    ('declined', 'Declined'),
+)
+
 TITLE_TYPE = (
     (MR, MR),
     (MRS, MRS),
@@ -71,11 +79,13 @@ ORDER_STATUS = (
     ("Delivered", "Delivered"),
     ("Completed", "Completed"),
 )
+
 # payment status
 PAYMENT_STATUS = (
     ("Success", "Success"),
     ("Failed", "Failed")
 )
+
 # ADDRESS TYPES
 ADDRESS_TYPES = (
     ("Billing", "Billing"),

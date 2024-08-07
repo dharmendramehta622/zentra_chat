@@ -1,4 +1,4 @@
-"""attendo URL Configuration
+"""zentra_chat URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -22,9 +22,9 @@ from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView,SpectacularRedocView,SpectacularSwaggerView
 
-admin.site.site_header = 'Attendo Admin'                    # default: "Django Administration"
+admin.site.site_header = 'zentra_chat Admin'                    # default: "Django Administration"
 admin.site.index_title = 'Dashboard Area'                 # default: "Site administration"
-admin.site.site_title = 'Welcome to Attendo Admin Portal'
+admin.site.site_title = 'Welcome to zentra_chat Admin Portal'
 
 router = DefaultRouter()
 
@@ -34,8 +34,7 @@ urlpatterns = [
     path('',include('apps.website.urls')),
     path('monitor', include('django_prometheus.urls')),
     path('user/',include('apps.users.urls')),
-    path('news/',include('apps.news.urls')),
-    path('attendance/',include('apps.clockin.urls')),
+    path('attendance/',include('apps.user_requests.urls')),
 
     #graphl view    
     url(r"graphql", GraphQLView.as_view(graphiql=True)),

@@ -1,5 +1,5 @@
 """
-WSGI config for attendo project.
+WSGI config for zentra_chat project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -10,6 +10,6 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 import os
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'attendo.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zentra_chat.settings')
 
 application = get_wsgi_application()

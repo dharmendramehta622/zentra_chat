@@ -1,5 +1,5 @@
 """
-ASGI config for attendo project.
+ASGI config for zentra_chat project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'attendo.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zentra_chat.settings')
 
 application = get_asgi_application()
