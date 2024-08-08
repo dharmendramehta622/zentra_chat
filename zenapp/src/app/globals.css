@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.auth-shadow {
+  background-color: white; /* Example background color */
+  box-shadow: 4px 4px 16px 0 rgba(0, 0, 0, 0.04),
+    -4px -4px 16px 0 rgba(0, 0, 0, 0.04);
+}
+
+.shadow-xs {
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+.primaryColor {
+  background-color: rgba(105, 56, 239, 1);
+}
+.Image-white {
+  filter: brightness(0) invert(1);
+}
+.Image-black {
+  filter: brightness(0) invert(0);
+}
+.word-wrap {
+  word-wrap: break-word; /* Ensures long words break and wrap onto the next line */
+  word-break: break-all; /* Breaks all long words at the nearest character */
+  white-space: pre-wrap; /* Allows for preserving whitespace but also wrapping text */
+}
