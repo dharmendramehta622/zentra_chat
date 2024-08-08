@@ -19,11 +19,8 @@ const DashBoard: React.FC = () => {
      <CustomHeader/>
       <div className="flex flex-grow w-full bg-[#F7F4FE] mt-1">
         <Sidebar  selectedItem={selectedItem} onSelectItem={setSelectedItem} />
-        <div className="w-4/5 flex flex-col ml-1 pt-[23px] px-[35px]">
-                <div className="flex flex-row">
-                <UserList />
-                <UserChat/>
-                </div>
+        <div className="w-full ml-1 pt-[23px] px-[35px]">
+           <UserList /> 
         </div>
       </div>
     </div>
