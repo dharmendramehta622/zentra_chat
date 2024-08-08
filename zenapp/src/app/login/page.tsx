@@ -6,6 +6,11 @@ import { AxiosServices } from "../services/api_services";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { LocalStorageService, LocalStorageServiceItems } from "../services/storage_services";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface CustomJwtPayload extends JwtPayload {
+    user_id: string;  
+}
 
 const Login = () => {
 
@@ -22,7 +27,11 @@ const Login = () => {
             const _response = await AxiosServices.instance.post('user/login/', { "email": userName, "password": password });
 
             if (_response.status) {
+                const access = _response.msg.data.access;
+                const decoded = jwtDecode<CustomJwtPayload>(access);
+                
                 LocalStorageService.instance.set(LocalStorageServiceItems.ACCESS_TOKEN, _response.msg.data.access)
+                LocalStorageService.instance.set(LocalStorageServiceItems.USER_ID, decoded.user_id)
                 LocalStorageService.instance.set(LocalStorageServiceItems.REFRESH_TOKEN, _response.msg.data.refresh)
                 router.replace('/home');
             }
