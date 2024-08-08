@@ -5,7 +5,7 @@ const CustomHeader = () => {
     <div className="flex w-full bg-[#F7F4FE] h-[84px]  ">
         <div className="w-1/5 flex bg-white items-center pl-[37px] p-4">
           <Image width={44} height={38} src="./logo.svg" className="fluid w-[44px] h-[38px]" alt="Logo" />
-          <p className="text-primary600 text-2xl font-bold">AMS</p>
+          <p className="text-primary600 text-2xl font-bold">ZENCHAT</p>
         </div>
         <div className="w-4/5 flex justify-between items-center bg-white ml-1 pl-[37px]">
           <div className="relative w-[402px] h-[42px]">
@@ -32,8 +32,8 @@ const CustomHeader = () => {
               className="mr-[20px] w-[40px] h-[40px]"
             />
             <div className="grid">
-              <p>Student</p>
-              <p>student@domain.ae</p>
+              <p>User</p>
+              <p>user@zenchat.com</p>
             </div>
           </div>
         </div>

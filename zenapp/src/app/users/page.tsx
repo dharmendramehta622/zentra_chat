@@ -4,7 +4,7 @@
 import withAuth from "../components/withAuth";
 import CustomHeader from "../components/header";
 import Sidebar from "../components/sidebar";
-import DashboardItem from "../components/items/dashboardItem";
+import DashboardItem from "../components/items/userList";
 import { useState } from "react";
 import UserItems from "../components/items/userItems";
 
