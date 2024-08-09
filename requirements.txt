@@ -35,3 +35,4 @@ docutils
 daphne
 channels
 uvicorn[standard]
+whitenoise
