@@ -49,12 +49,13 @@ const UserChat:React.FC<UserChatProps> = ({ user }) => {
     const handleSendMessage = () => {
       if (socket.current && text.trim() !== '') {
         const user_id = LocalStorageService.instance.get(LocalStorageServiceItems.USER_ID)
-        const payload = {
+        const payload =JSON.stringify( {
           "message":text,
           "sender": user_id,
           "receiver": user.id
-        }
-        socket.current.send(text);
+        })
+        console.log(payload); 
+        socket.current.send(JSON.stringify(payload));
         settext('');
       }
     };
